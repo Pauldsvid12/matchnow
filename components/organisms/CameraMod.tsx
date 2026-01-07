@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { View, StyleSheet, Text, Button, TouchableOpacity } from 'react-native';
 import { CameraView } from 'expo-camera'; 
-import { Aperture } from 'lucide-react-native'; // Usamos Aperture o Camera
+import { Aperture, SwitchCamera } from 'lucide-react-native';
 import { useCameraLogic } from '../../lib/modules/camera/useCameraLogic';
 import { RoundButton } from '../atoms/RoundButton';
 
@@ -14,6 +14,8 @@ export const CameraMod: React.FC<CameraModProps> = ({ onPictureTaken }) => {
     permission, 
     requestPermission, 
     cameraRef, 
+    facing,              // Estado de la cámara (front/back)
+    toggleCameraFacing,  // Función para alternar
   } = useCameraLogic();
 
   if (!permission) return <View />;
@@ -48,10 +50,13 @@ export const CameraMod: React.FC<CameraModProps> = ({ onPictureTaken }) => {
       <CameraView 
         style={styles.camera} 
         ref={cameraRef} 
-        facing="back"
+        facing={facing} // Control dinámico de la cámara
       >
         <View style={styles.controls}>
-          {/* Botón de Captura Mejorado */}
+          {/* Espaciador invisible para balancear layout */}
+          <View style={styles.spacer} />
+
+          {/* Botón Principal de Disparo */}
           <RoundButton 
             onPress={handleCapture} 
             size={80} 
@@ -60,6 +65,15 @@ export const CameraMod: React.FC<CameraModProps> = ({ onPictureTaken }) => {
           >
              <Aperture size={40} color="#000" strokeWidth={1.5} />
           </RoundButton>
+
+          {/* Botón de Cambio de Cámara */}
+          <TouchableOpacity 
+            onPress={toggleCameraFacing} 
+            style={styles.flipBtn}
+            activeOpacity={0.7}
+          >
+            <SwitchCamera color="white" size={28} />
+          </TouchableOpacity>
         </View>
       </CameraView>
     </View>
@@ -75,10 +89,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Distribuye elementos a los extremos y centro
     alignItems: 'center',
+    paddingHorizontal: 40, // Margen lateral para el botón de flip
   },
   captureBtn: {
     borderWidth: 4,
-    borderColor: '#e5e5e5', // Anillo exterior sutil
+    borderColor: '#e5e5e5',
+  },
+  flipBtn: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)', // Fondo semitransparente
+    borderRadius: 25,
+  },
+  spacer: {
+    width: 50, // Mismo ancho que flipBtn para centrar el botón de disparo
   }
 });

@@ -1,17 +1,23 @@
 import { useState, useRef, useCallback } from 'react';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 
 export const useCameraLogic = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [facing, setFacing] = useState<CameraType>('back'); // Estado inicial: trasera
+
+  // Función para alternar cámara
+  const toggleCameraFacing = useCallback(() => {
+    setFacing((current) => (current === 'back' ? 'front' : 'back'));
+  }, []);
 
   const takePicture = useCallback(async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({
           quality: 0.7,
-          skipProcessing: true, // Más rápido
+          skipProcessing: true, // Optimización de velocidad
         });
         if (photo?.uri) {
           setPhotoUri(photo.uri);
@@ -31,6 +37,8 @@ export const useCameraLogic = () => {
     requestPermission,
     cameraRef,
     photoUri,
+    facing,              // Exponemos estado actual
+    toggleCameraFacing,  // Exponemos función de cambio
     takePicture,
     resetCamera,
   };
