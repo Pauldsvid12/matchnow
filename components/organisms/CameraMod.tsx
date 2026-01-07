@@ -1,24 +1,19 @@
 import React from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
 import { CameraView } from 'expo-camera'; 
+import { Aperture } from 'lucide-react-native'; // Usamos Aperture o Camera
 import { useCameraLogic } from '../../lib/modules/camera/useCameraLogic';
-import { RoundButton } from '@/components/atoms/RoundButton'; //falta aun
-
-
-const CameraIcon = () => <Text style={{fontSize: 30}}>📸</Text>;
+import { RoundButton } from '../atoms/RoundButton';
 
 interface CameraModProps {
   onPictureTaken: (uri: string) => void;
 }
 
 export const CameraMod: React.FC<CameraModProps> = ({ onPictureTaken }) => {
-  // Hook de logica de camara (aislado de UI)
   const { 
     permission, 
     requestPermission, 
     cameraRef, 
-    // takePicture no lo usamos directo aqui porque necesitamos interceptar el resultado
-    // pero podemos usar la ref directo
   } = useCameraLogic();
 
   if (!permission) return <View />;
@@ -56,8 +51,14 @@ export const CameraMod: React.FC<CameraModProps> = ({ onPictureTaken }) => {
         facing="back"
       >
         <View style={styles.controls}>
-          <RoundButton onPress={handleCapture} size={80} color="white">
-             <CameraIcon />
+          {/* Botón de Captura Mejorado */}
+          <RoundButton 
+            onPress={handleCapture} 
+            size={80} 
+            color="white"
+            style={styles.captureBtn}
+          >
+             <Aperture size={40} color="#000" strokeWidth={1.5} />
           </RoundButton>
         </View>
       </CameraView>
@@ -76,4 +77,8 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  captureBtn: {
+    borderWidth: 4,
+    borderColor: '#e5e5e5', // Anillo exterior sutil
+  }
 });
