@@ -1,48 +1,53 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { CameraMod } from '../components/organisms/CameraMod'; 
-import { PhotoCard } from '../components/molecules/PhotoCard'; //usar
+import { Image as ImageIcon, Check, X } from 'lucide-react-native'; // Importamos iconos Lucide
+
+import { CameraMod } from '../components/organisms/CameraMod';
+import { PhotoCard } from '../components/molecules/PhotoCard';
 import { galleryStore } from '../lib/store/galleryStore';
 
 export default function Index() {
   const [currentPhotoUri, setCurrentPhotoUri] = useState<string | null>(null);
 
-  //Callback: Foto capturada
   const handlePictureTaken = (uri: string) => {
-    console.log('foto capturada:', uri);
     setCurrentPhotoUri(uri);
   };
 
-  // Callback: Swipe Right (Guardar)
   const handleSave = () => {
     if (currentPhotoUri) {
-      console.log('foto guardada');
-      
       galleryStore.addPhoto({
         id: Date.now().toString(),
         uri: currentPhotoUri,
         date: new Date(),
       });
-
       setCurrentPhotoUri(null);
     }
   };
 
-  // Callback: Swipe Left (Descartar)
   const handleDiscard = () => {
-    console.log('foto descartada');
     setCurrentPhotoUri(null);
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       {!currentPhotoUri ? (
-        // FASE 1: Captura
-        <CameraMod onPictureTaken={handlePictureTaken} />
+        <>
+          {/* MODO CÁMARA */}
+          <CameraMod onPictureTaken={handlePictureTaken} />
+          
+          {/* Acceso flotante a Galería desde la cámara */}
+          <TouchableOpacity 
+            style={styles.floatingGalleryBtn} 
+            onPress={() => router.push('/gallery')}
+            activeOpacity={0.7}
+          >
+            <ImageIcon color="white" size={24} />
+          </TouchableOpacity>
+        </>
       ) : (
-        // FASE 2: Decision (Usando PhotoCard corregido)
+        // MODO REVISIÓN
         <View style={styles.reviewContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Revisar Foto</Text>
@@ -55,12 +60,25 @@ export default function Index() {
           />
 
           <View style={styles.footer}>
-            <Text style={styles.hint}>Desliza para decidir</Text>
-            <Button 
-              title="Ver Galeria Guardada" 
-              onPress={() => router.push('/gallery')} 
-              color="#3b82f6"
-            />
+            <View style={styles.instructions}>
+              <View style={styles.instructionItem}>
+                <X color="#ef4444" size={20} />
+                <Text style={[styles.hint, {color: '#ef4444'}]}>Izquierda</Text>
+              </View>
+              <Text style={styles.hint}>Desliza</Text>
+              <View style={styles.instructionItem}>
+                <Text style={[styles.hint, {color: '#4ade80'}]}>Derecha</Text>
+                <Check color="#4ade80" size={20} />
+              </View>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.galleryButton} 
+              onPress={() => router.push('/gallery')}
+            >
+              <ImageIcon color="#3b82f6" size={20} />
+              <Text style={styles.galleryButtonText}>Ver Galería Guardada</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -91,10 +109,49 @@ const styles = StyleSheet.create({
   footer: {
     marginTop: 30,
     alignItems: 'center',
+    gap: 20,
+    width: '100%',
+  },
+  instructions: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 15,
+    opacity: 0.8,
+  },
+  instructionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
   hint: {
     color: '#9ca3af',
     fontSize: 14,
+    fontWeight: '600',
+  },
+  galleryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
+  },
+  galleryButtonText: {
+    color: '#3b82f6', // Azul
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  floatingGalleryBtn: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   }
 });
