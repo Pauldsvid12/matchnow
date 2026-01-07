@@ -11,17 +11,6 @@ Arquitectura Atómica: Estructura de componentes escalable y mantenible.
 🏗️ Arquitectura del Proyecto
 Este proyecto sigue estrictamente el patrón Atomic Design y separación de responsabilidades:
 
-bash
-/
-├── app/                  # Rutas y Navegación (Expo Router)
-├── components/           # UI (Atomic Design)
-│   ├── atoms/            # Botones, Iconos base (RoundButton)
-│   ├── molecules/        # Componentes compuestos (PhotoCard)
-│   └── organisms/        # Bloques complejos de lógica (CameraMod)
-└── lib/                  # Lógica de Negocio Pura
-    ├── modules/camera/   # Hooks de Cámara (useCameraLogic)
-    ├── ui/               # Hooks de Gestos/Animación (useSwipeLogic)
-    └── store/            # Gestión de Estado (galleryStore)
 🛠️ Tecnologías
 Core: React Native, TypeScript, Expo SDK 52
 
