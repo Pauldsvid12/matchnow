@@ -1,53 +1,32 @@
-> Edited for use in IDX on 07/09/12
+📸 SwapCamera - Mobile Swipe Experience
+Aplicación nativa construida con React Native, Expo Router y Reanimated. Captura momentos y organízalos con gestos intuitivos estilo Tinder.
 
-# Welcome to your Expo app 👋
+🚀 Características Principales
+Cámara Integrada: Captura de fotos en alta calidad con soporte para cámara frontal y trasera (Selfie Mode).
+Gestos Avanzados: Interfaz de decisión "Swipe" (Deslizar) potenciada por react-native-gesture-handler.
+Animaciones Físicas: Interpolación fluida a 60fps usando react-native-reanimated.
+Galería Persistente: Almacenamiento local de fotos aceptadas.
+Arquitectura Atómica: Estructura de componentes escalable y mantenible.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+🏗️ Arquitectura del Proyecto
+Este proyecto sigue estrictamente el patrón Atomic Design y separación de responsabilidades:
 
-## Get started
+bash
+/
+├── app/                  # Rutas y Navegación (Expo Router)
+├── components/           # UI (Atomic Design)
+│   ├── atoms/            # Botones, Iconos base (RoundButton)
+│   ├── molecules/        # Componentes compuestos (PhotoCard)
+│   └── organisms/        # Bloques complejos de lógica (CameraMod)
+└── lib/                  # Lógica de Negocio Pura
+    ├── modules/camera/   # Hooks de Cámara (useCameraLogic)
+    ├── ui/               # Hooks de Gestos/Animación (useSwipeLogic)
+    └── store/            # Gestión de Estado (galleryStore)
+🛠️ Tecnologías
+Core: React Native, TypeScript, Expo SDK 52
 
-#### Android
-
-Android previews are defined as a `workspace.onStart` hook and started as a vscode task when the workspace is opened/started.
-
-Note, if you can't find the task, either:
-- Rebuild the environment (using command palette: `IDX: Rebuild Environment`), or
-- Run `npm run android -- --tunnel` command manually run android and see the output in your terminal. The device should pick up this new command and switch to start displaying the output from it.
-
-In the output of this command/task, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You'll also find options to open the app's developer menu, reload the app, and more.
-
-#### Web
-
-Web previews will be started and managred automatically. Use the toolbar to manually refresh.
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Navegación: Expo Router v4
+- Cámara: Expo Camera (Legacy & Modern support)
+- Gestos: React Native Gesture Handler
+- Animaciones: React Native Reanimated 3
+- Iconos: Lucide React Native
