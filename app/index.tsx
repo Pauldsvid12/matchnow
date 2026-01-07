@@ -2,57 +2,53 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Button, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-
-// Imports de Arquitectura Atómica
-import { TinderCard } from '../components/molecules/TinderCard';
+import { CameraMod } from '../components/organisms/CameraMod'; 
+import { PhotoCard } from '../components/molecules/PhotoCard'; //usar
 import { galleryStore } from '../lib/store/galleryStore';
 
 export default function Index() {
-  // Estado local mínimo solo para controlar el flujo visual (Cámara vs Revisión)
   const [currentPhotoUri, setCurrentPhotoUri] = useState<string | null>(null);
 
-  // Callback: Cuando la cámara captura una foto
+  //Callback: Foto capturada
   const handlePictureTaken = (uri: string) => {
-    console.log('📸 Foto capturada:', uri);
+    console.log('foto capturada:', uri);
     setCurrentPhotoUri(uri);
   };
 
   // Callback: Swipe Right (Guardar)
   const handleSave = () => {
     if (currentPhotoUri) {
-      console.log('✅ Foto guardada en Store');
+      console.log('foto guardada');
       
-      // Lógica de negocio delegada a la Store
       galleryStore.addPhoto({
         id: Date.now().toString(),
         uri: currentPhotoUri,
         date: new Date(),
       });
 
-      // Reset para tomar nueva foto
       setCurrentPhotoUri(null);
     }
   };
 
   // Callback: Swipe Left (Descartar)
   const handleDiscard = () => {
-    console.log('🗑️ Foto descartada');
-    setCurrentPhotoUri(null); // Solo reseteamos el estado
+    console.log('foto descartada');
+    setCurrentPhotoUri(null);
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       {!currentPhotoUri ? (
-        // FASE 1: Captura (Organismo Cámara)
+        // FASE 1: Captura
         <CameraMod onPictureTaken={handlePictureTaken} />
       ) : (
-        // FASE 2: Decisión (Molécula SwipeCard)
+        // FASE 2: Decision (Usando PhotoCard corregido)
         <View style={styles.reviewContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Revisar Foto</Text>
           </View>
           
-          <TinderCard 
+          <PhotoCard 
             imageUri={currentPhotoUri} 
             onSwipeRight={handleSave} 
             onSwipeLeft={handleDiscard} 
@@ -61,7 +57,7 @@ export default function Index() {
           <View style={styles.footer}>
             <Text style={styles.hint}>Desliza para decidir</Text>
             <Button 
-              title="Ver Galería Guardada" 
+              title="Ver Galeria Guardada" 
               onPress={() => router.push('/gallery')} 
               color="#3b82f6"
             />
@@ -79,7 +75,7 @@ const styles = StyleSheet.create({
   },
   reviewContainer: { 
     flex: 1, 
-    backgroundColor: '#111827', // Gris muy oscuro
+    backgroundColor: '#111827',
     justifyContent: 'space-between', 
     alignItems: 'center',
     paddingVertical: 60,
