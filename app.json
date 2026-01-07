@@ -37,7 +37,9 @@
           "dark": {
             "backgroundColor": "#000000"
           }
-        },
+        }
+      ], 
+      [
         "expo-camera",
         {
           "cameraPermission": "Permite acceso para tomar fotos de los productos.",
