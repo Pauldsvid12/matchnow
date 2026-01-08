@@ -1,159 +1,122 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { Image as ImageIcon, Check, X } from 'lucide-react-native';
-
-import { CameraMod } from '../components/organisms/CameraMod';
-import { PhotoCard } from '../components/molecules/PhotoCard';
-import { galleryStore } from '../lib/store/galleryStore';
+import { Camera, ArrowRight } from 'lucide-react-native';
 
 export default function Index() {
-  const [currentPhotoUri, setCurrentPhotoUri] = useState<string | null>(null);
-
-  const handlePictureTaken = (uri: string) => {
-    setCurrentPhotoUri(uri);
-  };
-
-  // ✅ Debe ser async porque usas await
-  const handleSave = async () => {
-    if (!currentPhotoUri) return;
-
-    // ✅ El store ahora recibe SOLO el uri (string)
-    await galleryStore.addPhoto(currentPhotoUri);
-
-    setCurrentPhotoUri(null);
-  };
-
-  const handleDiscard = () => {
-    setCurrentPhotoUri(null);
-  };
-
   return (
-    <GestureHandlerRootView style={styles.container}>
-      {!currentPhotoUri ? (
-        <>
-          {/* MODO CÁMARA */}
-          <CameraMod onPictureTaken={handlePictureTaken} />
+    <View style={styles.container}>
+      {}
+      <View style={styles.blobA} />
+      <View style={styles.blobB} />
 
-          {/* Acceso flotante a Galería desde la cámara */}
-          <TouchableOpacity
-            style={styles.floatingGalleryBtn}
-            onPress={() => router.push('/gallery')}
-            activeOpacity={0.7}
-          >
-            <ImageIcon color="white" size={24} />
-          </TouchableOpacity>
-        </>
-      ) : (
-        // MODO REVISIÓN
-        <View style={styles.reviewContainer}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Revisar Foto</Text>
-          </View>
+      <View style={styles.content}>
+        <Text style={styles.title}>Listo para capturar?</Text>
+        <Text style={styles.subtitle}>
+          Desliza para decidir. Guarda solo lo mejor.
+        </Text>
 
-          <PhotoCard
-            imageUri={currentPhotoUri}
-            onSwipeRight={handleSave}
-            onSwipeLeft={handleDiscard}
-          />
-
-          <View style={styles.footer}>
-            <View style={styles.instructions}>
-              <View style={styles.instructionItem}>
-                <X color="#ef4444" size={20} />
-                <Text style={[styles.hint, { color: '#ef4444' }]}>Izquierda</Text>
-              </View>
-
-              <Text style={styles.hint}>Desliza</Text>
-
-              <View style={styles.instructionItem}>
-                <Text style={[styles.hint, { color: '#4ade80' }]}>Derecha</Text>
-                <Check color="#4ade80" size={20} />
-              </View>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.button}
+          onPress={() => router.push('/camera')}
+        >
+          <View style={styles.buttonLeft}>
+            <View style={styles.iconWrap}>
+              <Camera size={20} color="white" strokeWidth={2.2} />
             </View>
-
-            <TouchableOpacity
-              style={styles.galleryButton}
-              onPress={() => router.push('/gallery')}
-              activeOpacity={0.8}
-            >
-              <ImageIcon color="#3b82f6" size={20} />
-              <Text style={styles.galleryButtonText}>Ver Galería Guardada</Text>
-            </TouchableOpacity>
+            <Text style={styles.buttonText}>Empezar</Text>
           </View>
-        </View>
-      )}
-    </GestureHandlerRootView>
+
+          <ArrowRight size={18} color="rgba(255,255,255,0.85)" />
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.footerHint}>Made in UETS</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#0b1220',
+    paddingTop: 70,
+    paddingHorizontal: 18,
+    paddingBottom: 22,
   },
-  reviewContainer: {
+
+  blobA: {
+    position: 'absolute',
+    top: -130,
+    right: -140,
+    width: 280,
+    height: 280,
+    borderRadius: 160,
+    backgroundColor: 'rgba(59,130,246,0.18)',
+  },
+  blobB: {
+    position: 'absolute',
+    bottom: -150,
+    left: -150,
+    width: 320,
+    height: 320,
+    borderRadius: 180,
+    backgroundColor: 'rgba(16,185,129,0.12)',
+  },
+
+  content: {
     flex: 1,
-    backgroundColor: '#111827',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 60,
+    justifyContent: 'center',
   },
-  header: {
-    marginBottom: 20,
-  },
+
   title: {
     color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '900',
+    letterSpacing: 0.2,
   },
-  footer: {
-    marginTop: 30,
-    alignItems: 'center',
-    gap: 20,
-    width: '100%',
+  subtitle: {
+    marginTop: 10,
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 15,
+    lineHeight: 22,
   },
-  instructions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
-    opacity: 0.8,
-  },
-  instructionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  hint: {
-    color: '#9ca3af',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  galleryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+
+  button: {
+    marginTop: 26,
+    height: 58,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.3)',
+    borderColor: 'rgba(255,255,255,0.14)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  galleryButtonText: {
-    color: '#3b82f6',
-    fontWeight: '600',
+  buttonLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  iconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    backgroundColor: 'rgba(59,130,246,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
     fontSize: 16,
+    fontWeight: '800',
   },
-  floatingGalleryBtn: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 12,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+
+  footerHint: {
+    textAlign: 'center',
+    color: 'rgba(255,255,255,0.45)',
+    fontSize: 12,
   },
 });
